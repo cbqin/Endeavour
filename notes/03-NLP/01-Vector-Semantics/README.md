@@ -44,7 +44,7 @@
   - arousal: the intensity of emotion provoked by the stimulus，被刺激所引起的感情强度
   - dominance: the degree of control exerted by the stimulus，刺激所施加的控制程度
 
-  通过对一个单词从以上三个方面的衡量，就可以得到一个三位空间中的点，这是历史上关于向量语义的第一次表述，突破性的想法💡！！
+  通过对一个单词从以上三个方面的衡量，就可以得到一个三维空间中的点，这是历史上关于向量语义的第一次表述，突破性的想法💡！！
 
 ## Vector Semantics
 
