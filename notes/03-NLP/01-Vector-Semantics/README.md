@@ -73,4 +73,43 @@
 
 #### Words as vectors: word dimensions
 
-可不可以用词来衡量词呢？显然可以，这就是 Term-term matrix 的想法。
+可不可以用词来衡量词呢？显然可以，这就是 Term-term matrix 的想法，在一个小窗口内，两个词共现的频次。
+
+|         |  aardvark  |  ...  |  computer  |  data  |  result  |  pie  |  sugar  |  ...  |
+| :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: |
+|  cherry |    0    |    ...    |    2    |   8   |   9   |   442   |   25   |   ...   |
+| strawberry |   0   |   ...   |    0   |   0   |   1   |   60   |   19   |   ...   |
+| digital |    0   |   ...   |   1670    |   1683   |   85   |   5   |   4   |   ...   |
+| information |    0   |   ...   |   3325    |   3982   |   378   |   5   |   13   |   ...   |
+
+每一个向量的维度是 |V| ，也是稀疏。
+
+### TF-IDF
+
+共现矩阵，不管是 term-document 还是 term-term ，其中每一项都是原始频次。原始频次并不能很好地衡量词之间的关系。对于一个词来说，如果有一个词和它的共现频率很高，那么一般情况下这个词对衡量它是起重要作用的；但是，如果这个词过于频繁的出现，那么这个词对于衡量其共现的词就没那么重要了。解决这个问题的方法有两个：TF-IDF 和 PPMI。
+
+TF-IDF 基于 term-document matrix。
+
+- Term Frequency
+
+  $$tf_{t,d}=log(count(t,d)+1)$$
+
+- Inverse Doucument Frequency
+
+  $$idf_t=log(\frac{N}{df_t})$$
+
+- TF-IDF
+
+  $$w_{t,d}=tf_{t,d} \times idf_t$$
+
+### Positive Pointwise Mutual Information (PPMI)
+
+互信息衡量两个变量间的依赖程度，数值上是点间互信息的期望。直观上，互信息度量 X 和 Y 共享的信息：它度量知道这两个变量其中一个，对另一个不确定度减少的程度。在 NLP 中，可以用点间互信息来度量两个词的相关程度。
+
+$$PPMI(w,c)=max(log\frac{P(w,c)}{P(w)P(c)},0)$$
+
+罕见词倾向于高PMI值。
+
+### Word2vec
+
+见 word2vec.md
