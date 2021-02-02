@@ -113,3 +113,11 @@ $$PPMI(w,c)=max(log\frac{P(w,c)}{P(w)P(c)},0)$$
 ### Word2vec
 
 见 word2vec.md
+
+## Something About Embeddings
+
+### Visualizing
+
+### Semantics Properties
+
+### Bias
