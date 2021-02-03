@@ -110,6 +110,8 @@ $$PPMI(w,c)=max(log\frac{P(w,c)}{P(w)P(c)},0)$$
 
 罕见词倾向于高PMI值。
 
+一般会用 SVD 进行降维。
+
 ### Word2vec
 
 见 word2vec.md
