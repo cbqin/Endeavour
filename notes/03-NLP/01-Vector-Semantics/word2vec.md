@@ -80,7 +80,6 @@ $$
 minimize\ J &= -\log{P(w_{c-m},...,w_{c-1},w_{c+1},w_{c+m}|w_c)} \\
 &= -\log{\prod_{j=0,j \not = m}^{2m}P(w_{c-m+j}|w_c)} \\
 &= -\log{\prod_{j=0,j \not = m}^{2m}P(u_{c-m+j}|v_c)}   \\
-
 &= -\log{\prod_{j=0,j \not = m}^{2m} \frac{exp(u_{c-m+j}^Tv_c)}{\sum_{k=1}^{|V|}exp(u_k^Tv_c)}} \\
 &= -\sum_{j=0,j \not = m}u_{c-m+j}^Tv_c + 2m\log{\sum_{k=1}^{|V|}exp(u_k^Tv_c)}
 \end{aligned}
