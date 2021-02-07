@@ -33,8 +33,8 @@ Word2vec 包括两个模型：CBOW 和 Skip-Gram 以及两个优化算法：Hier
 
 $$
 \begin{aligned}
-H(y,\hat{y}) &= -\sum_{j=1}^{|V|}y_j\log{\hat{y}} \newline
-             &= -y_i\log{\hat{y_i}} \newline
+H(y,\hat{y}) &= -\sum_{j=1}^{|V|}y_j\log{\hat{y}} \\
+             &= -y_i\log{\hat{y_i}} \\
              &= -\log{\hat{y_i}}
 \end{aligned}
 $$
