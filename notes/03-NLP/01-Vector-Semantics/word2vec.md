@@ -29,16 +29,26 @@ Word2vec 包括两个模型：CBOW 和 Skip-Gram 以及两个优化算法：Hier
 
 一般选择交叉熵来衡量分布 $\hat{y}$ 和 $y$ 的差异。
 
-<!-- $$ H(y,\hat{y})=-\sum_{j=1}^{|V|}y_j\log{\hat{y}} $$  -->
 
 $$
 \begin{aligned}
-H(y,\hat{y}) &= -\sum_{j=1}^{|V|}y_j\log{\hat{y}} \\
-             &= -y_i\log{\hat{y_i}} \\
-             &= -\log{\hat{y_i}}
+H(y,\hat{y}) &= -\sum_{j=1}^{|V|}y_j\log{\hat{y}}
+ \\
+&=-y_i\log{\hat{y_i}} \\
+&= -\log{\hat{y_i}}
 \end{aligned}
 $$
 
+所以有：
+
+$$
+\begin{aligned}
+minimize\mathcal{J} &= -\log{P(w_c|w_{c-m},...,w_{c-1},w_{c+1},w_{c+m})} \\
+&= -\log{P(u_c|\hat{v})} \\
+&= -\log{\frac{exp(u_c^T\hat{v})}{\sum_{j=1}^{|V|}exp(u_j^T\hat{v})}} \\
+&= -u_c^T\hat{v} + \log{\sum_{j=1}^{|V|}exp(u_j^T\hat{v})}
+\end{aligned}
+$$
 
 
 ## Skip-Gram 
