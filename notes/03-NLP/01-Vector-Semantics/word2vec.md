@@ -43,7 +43,7 @@ $$
 
 $$
 \begin{aligned}
-minimize\mathcal{J} &= -\log{P(w_c|w_{c-m},...,w_{c-1},w_{c+1},w_{c+m})} \\
+minimize \ J &= -\log{P(w_c|w_{c-m},...,w_{c-1},w_{c+1},w_{c+m})} \\
 &= -\log{P(u_c|\hat{v})} \\
 &= -\log{\frac{exp(u_c^T\hat{v})}{\sum_{j=1}^{|V|}exp(u_j^T\hat{v})}} \\
 &= -u_c^T\hat{v} + \log{\sum_{j=1}^{|V|}exp(u_j^T\hat{v})}
@@ -57,4 +57,31 @@ $$
 
 <center><img src="./images/skip-gram.png" width = "200" height = "200"/></center>
 
+### Notations
 
+- $w_i$: 词表 $V$ 中第 $i$ 个单词。
+- $\mathcal{V}\in R^{n\times|V|}$: 输入单词矩阵。
+- $\mathcal{v_i}$: $\mathcal{V}$ 的第 $i$ 列，$w_i$ 的输入向量表示。
+- $\mathcal{U}\in R^{|V|\times n}$: 输出单词矩阵。
+- $\mathcal{u_i}$: $\mathcal{U}$ 的第 $i$ 行，$w_i$ 的输出向量表示。
+
+### Steps
+
+1. 中心词用独热编码表示: $x\in{R^{|V|}}$
+2. 输入向量转换: $v_c=\mathcal{V}x\in{R^n}$
+3. 得分: $z=\mathcal{U}v_c\in{R^{|V|}}$
+4. 概率: $\hat{y}=softmax(z)\in{R^{|V|}}$. $\hat{y}_{c-m},...,\hat{y}_{c-1},\hat{y}_{c+1},\hat{y}_{c+m}$ 是与上下文中词对应的概率
+5. 比较: 独热编码表示 $y^{c-m},...,y^{c-1},y^{c+1},...,y^{c+m}$ 和对应的概率
+
+### Object Function
+
+$$
+\begin{aligned}
+minimize\ J &= -\log{P(w_{c-m},...,w_{c-1},w_{c+1},w_{c+m}|w_c)} \\
+&= -\log{\prod_{j=0,j \not = m}^{2m}P(w_{c-m+j}|w_c)} \\
+&= -\log{\prod_{j=0,j \not = m}^{2m}P(u_{c-m+j}|v_c)}   \\
+
+&= -\log{\prod_{j=0,j \not = m}^{2m} \frac{exp(u_{c-m+j}^Tv_c)}{\sum_{k=1}^{|V|}exp(u_k^Tv_c)}} \\
+&= -\sum_{j=0,j \not = m}u_{c-m+j}^Tv_c + 2m\log{\sum_{k=1}^{|V|}exp(u_k^Tv_c)}
+\end{aligned}
+$$
