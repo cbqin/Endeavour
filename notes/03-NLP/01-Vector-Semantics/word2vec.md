@@ -105,8 +105,26 @@ $$
 则：
 
 $$
-
 J = -\sum_{(w,c) \in D} \log \frac{1}{1+exp(-u_w^Tv_c)} - \sum_{(w,c) \in \tilde{D}} \log \frac{1}{1+exp(u_w^Tv_c)}
+$$
+
+在 skip-gram 中，给定中心词 $c$，对于上下文的词 $c-m+j$ 的目标函数是：
+
+$$
+-\log \delta(u_{c-m+j}^T v_c) - \sum_{k=1}^K \log \delta(-\tilde{u}_k^T v_c)
+$$
+
+在 cbow 中，给定上下文向量 $\hat{v}=\frac{v_{c-m}+...+v_{c-1}+v_{c+1}+...+v_{c+m}}{2m}$，对于中心词 $c$ 的目标函数是：
+
+$$
+-\log \delta(u_c^T \hat{v}) - \sum_{k=1}^K \log \delta(-\tilde{u}_k^T \hat{v})
+$$
+
+
+以上公式中，$\{\hat{u_k}|k=1,2,..,K\}$ 依概率 $P_n(w)$ 采样，一般为一元模型的 $3/4$ 次方：
+
+$$
+P_n(w)={P_{unigram}(w)}^{\frac{3}{4}}
 $$
 
 ## Hierarchical Softmax
