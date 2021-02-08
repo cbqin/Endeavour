@@ -84,3 +84,29 @@ minimize\ J &= -\log{P(w_{c-m},...,w_{c-1},w_{c+1},w_{c+m}|w_c)} \\
 &= -\sum_{j=0,j \not = m}u_{c-m+j}^Tv_c + 2m\log{\sum_{k=1}^{|V|}exp(u_k^Tv_c)}
 \end{aligned}
 $$
+
+## Negative Sampling
+
+以上目标函数的每一次更新都要遍历整个词表，当词表很大的时候，计算量就非常大，所以可以负采样少许样本，降低计算量。
+
+此时的目标函数不一样了。考虑一组单词 $(w,c)$ ,分别为是中心词和上下文中的词，用 $P(D=1|w,c)$ 表示 $(w,c)$ 来自于语料库的概率，而 $P(D=0|w,c)$ 则表示 $(w,c)$ 来自非语料库的概率，目标函数就是让这两者的概率都尽可能的大。
+
+$$
+\begin{aligned}
+
+\theta &= \underset{\theta}{argmax}\prod_{(w,c) \in D}P(D=1|w,c,\theta)\prod_{(w,c) \in \tilde{D}}P(D=0|w,c,\theta) \\
+&= \underset{\theta}{argmax}\prod_{(w,c) \in D}P(D=1|w,c,\theta)\prod_{(w,c) \in \tilde{D}}(1-P(D=0|w,c,\theta)) \\
+&= \underset{\theta}{argmax}\sum_{(w,c) \in D} \log P(D=1|w,c,\theta) + \sum_{(w,c) \in \tilde{D}} \log (1-P(D=0|w,c,\theta)) \\
+&= \underset{\theta}{argmax} \sum_{(w,c) \in D} \log \frac{1}{1+exp(-u_w^Tv_c)} + \sum_{(w,c) \in \tilde{D}} \log (1-\frac{1}{1+exp(-u_w^Tv_c)}) \\
+&= \underset{\theta}{argmax} \sum_{(w,c) \in D} \log \frac{1}{1+exp(-u_w^Tv_c)} + \sum_{(w,c) \in \tilde{D}} \log \frac{1}{1+exp(u_w^Tv_c)}
+\end{aligned}
+$$
+
+则：
+
+$$
+
+J = -\sum_{(w,c) \in D} \log \frac{1}{1+exp(-u_w^Tv_c)} - \sum_{(w,c) \in \tilde{D}} \log \frac{1}{1+exp(u_w^Tv_c)}
+$$
+
+## Hierarchical Softmax
