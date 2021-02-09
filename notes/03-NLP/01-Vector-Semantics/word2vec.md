@@ -55,7 +55,7 @@ $$
 
 中间词预测上下文中的词。
 
-<center><img src="./images/skip-gram.png" width = "200" height = "200"/></center>
+<center><img src="./images/skip-gram.png" width = "250" height = "200"/></center>
 
 
 ### Notations
@@ -71,7 +71,7 @@ $$
 1. 中心词用独热编码表示: $x\in{R^{\lvert V \rvert}}$
 2. 输入向量转换: $v_c=\mathcal{V}x\in{R^n}$
 3. 得分: $z=\mathcal{U}v_c\in{R^{\lvert V \rvert}}$
-4. 概率: $\hat{y}=softmax(z)\in{R^{\lvert V \rvert}}$. $\hat{y}_{c-m},...,\hat{y}_{c-1},\hat{y}_{c+1},\hat{y}_{c+m}$ 是与上下文中词对应的概率
+4. 概率: $\hat{y}=softmax(z)\in{R^{\lvert V \rvert}}$，$\hat{y}^{c-m},...,\hat{y}^{c-1},\hat{y}^{c+1},...,\hat{y}^{c+m}$ 是与上下文中词对应的概率
 5. 比较: 独热编码表示 $y^{c-m},...,y^{c-1},y^{c+1},...,y^{c+m}$ 和对应的概率
 
 ### Object Function
@@ -129,3 +129,7 @@ P_n(w)={P_{unigram}(w)}^{\frac{3}{4}}
 $$
 
 ## Hierarchical Softmax
+
+Hierarchical softmax 利用二叉树
+
+<center><img src="./images/binary-tree.png" width = "300" height = "200"/></center>
