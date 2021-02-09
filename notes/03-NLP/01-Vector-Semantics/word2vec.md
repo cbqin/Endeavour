@@ -130,6 +130,31 @@ $$
 
 ## Hierarchical Softmax
 
-Hierarchical softmax 利用二叉树
+Hierarchical softmax 利用二叉树来表示词表和计算概率。每一个叶子节点代表一个词，从根结点到叶子节点有唯一的一条路径。没有输出向量，而除了根结点和叶子节点，树中的节点都对应一个需要学习的向量。输出某一叶子节点的概率为 从根结点到此叶子节点路径出现的概率，所以复杂度由 O(|V|) 变为 O(log|V|)。
 
 <center><img src="./images/binary-tree.png" width = "300" height = "200"/></center>
+
+### Notations
+
+- $L(w)$: 从根结点到叶子节点 $w$ 的节点数
+- $n(w,i)$: 路径中第 $i$ 个节点，所以 $n(w,1)$ 是根结点，$n(w,L(w))$ 是叶子节点 $w$ 的父节点
+- $v_{n(w,i)}$: 路径中第 $i$ 个节点对应的向量
+- $ch(n)$: 对与内部节点 $n$，每次都选择其左孩子（或者右孩子）
+- $w_i$: 输入单词
+
+### Object Function
+
+对于输入单词 $w_i$，输出单词为 $w$ 的概率为：
+
+$$
+P(w \vert w_i) = \prod_{j=1}^{L(w)-1} \delta([n(w,j+1)=ch(n(w,j))] \cdot v_{n(w,j)}^T v_{w_i})
+$$
+
+并且
+
+$$
+[x] = \begin{cases}
+    1 &\text{if x is true}  \\
+    -1 &\text{otherwise} 
+\end{cases}
+$$
