@@ -158,3 +158,26 @@ $$
     -1 &\text{otherwise} 
 \end{cases}
 $$
+
+上式保证了在节点 $n$ 处，有：
+
+$$
+\delta(v_n^T v_{w_i}) + \delta(-v_n^T v_{w_i}) = 1
+$$
+
+而且像原始的 softmax 一样，有：
+
+$$
+\sum_{w=1}^{\lvert V \rvert} P(w \vert w_i) = 1
+$$
+
+在 cbow 中，$v_{w_i}=\frac{v_{c-m}+...+v_{c-1}+v_{c+1}+...+v_{c+m}}{2m}$；在 skip-gram 中，$v_{w_i}=v_c$，即中心词的输入向量。目标函数为：
+
+$$
+\begin{aligned}
+minimize \thickspace J &= -\log P(w \vert w_i) \\
+&= \prod_{j=1}^{L(w)-1} \delta([n(w,j+1)=ch(n(w,j))] \cdot v_{n(w,j)}^T v_{w_i})
+\end{aligned}
+$$
+
+训练时，只用更新从根结点到对应叶子节点路径上的点的向量即可。二叉树一般用 Huffman 树构建，频次高的词用有较小的路径长度，可以加快训练速度。在实际中，hierarchical softmax 对于频次较低的词比较友好，因为不涉及依据频次负采样的问题；negative sampling 对于频次较高的词和低维度向量比较友好。
