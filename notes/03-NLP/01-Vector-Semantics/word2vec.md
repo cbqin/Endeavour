@@ -181,3 +181,41 @@ minimize \thickspace J &= -\log P(w \vert w_i) \\
 $$
 
 训练时，只用更新从根结点到对应叶子节点路径上的点的向量即可。二叉树一般用 Huffman 树构建，频次高的词用有较小的路径长度，可以加快训练速度。在实际中，hierarchical softmax 对于频次较低的词比较友好，因为不涉及依据频次负采样的问题；negative sampling 对于频次较高的词和低维度向量比较友好。
+
+
+## SGNS (Skip-Gram with Negative Sampling)
+
+在这一节，作为练习，我们要实现 SGNS 。
+
+### Naive Softmax
+
+$$
+V \in R^{V \times d} \\
+U \in R^{V \times d}
+$$
+
+$$
+P(O=o \vert C=c) = \frac{exp(u_o^T v_c)}{\sum_{w \in V} exp(u_w^T v_c)} 
+$$
+
+$$
+\begin{aligned}
+    J_{naive-softmax(v_c,o,U)} &= -\sum_{w \in V} y_w \log(\hat{y}_w) \\
+    &= - 1 \times \log P(O=o \vert C=c) \\
+    &= -\log P(O=o \vert C=c) \\
+    &= -\log \frac{exp(u_o^T v_c)}{\sum_{w \in V} exp(u_w^T v_c)} \\
+    &= -\log (\hat{y}_o)
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+    \frac{J_{naive-softmax(v_c,o,U)}}{v_c} &= -\frac{\partial (u_o^T v_c)}{\partial v_c} + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial v_c} \\
+    &= -u_o + \frac{1}{\sum_{w \in V} exp(u_w^T v_c)} \frac{\partial (\sum_{w \in V} exp(u_w^T v_c))}{\partial v_c} \\
+    &= -u_o + \sum_{w \in V} \frac{exp(u_w^T v_c) u_w}{\sum_{w \in V} exp(u_w^T v_c)} \\
+    &= -u_o + \sum_{w \in V} P(O=w \vert C=c) u_w \\
+    &= -u_o + \sum_{w \in V} \hat{y}_w u_w \\
+    &= -U^Ty + U^T \hat{y} \\
+    &= U^T(\hat{y}-y)
+\end{aligned}
+$$
