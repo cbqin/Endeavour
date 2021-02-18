@@ -112,13 +112,13 @@ $$
 在 skip-gram 中，给定中心词 $c$，对于上下文的词 $c-m+j$ 的目标函数是：
 
 $$
--\log \delta(u_{c-m+j}^T v_c) - \sum_{k=1}^K \log \delta(-\tilde{u}_k^T v_c)
+-\log \sigma(u_{c-m+j}^T v_c) - \sum_{k=1}^K \log \sigma(-\tilde{u}_k^T v_c)
 $$
 
 在 cbow 中，给定上下文向量 $\hat{v}=\frac{v_{c-m}+...+v_{c-1}+v_{c+1}+...+v_{c+m}}{2m}$，对于中心词 $c$ 的目标函数是：
 
 $$
--\log \delta(u_c^T \hat{v}) - \sum_{k=1}^K \log \delta(-\tilde{u}_k^T \hat{v})
+-\log \sigma(u_c^T \hat{v}) - \sum_{k=1}^K \log \sigma(-\tilde{u}_k^T \hat{v})
 $$
 
 
@@ -147,7 +147,7 @@ Hierarchical softmax 利用二叉树来表示词表和计算概率。每一个�
 对于输入单词 $w_i$，输出单词为 $w$ 的概率为：
 
 $$
-P(w \vert w_i) = \prod_{j=1}^{L(w)-1} \delta([n(w,j+1)=ch(n(w,j))] \cdot v_{n(w,j)}^T v_{w_i})
+P(w \vert w_i) = \prod_{j=1}^{L(w)-1} \sigma([n(w,j+1)=ch(n(w,j))] \cdot v_{n(w,j)}^T v_{w_i})
 $$
 
 并且
@@ -162,7 +162,7 @@ $$
 上式保证了在节点 $n$ 处，有：
 
 $$
-\delta(v_n^T v_{w_i}) + \delta(-v_n^T v_{w_i}) = 1
+\sigma(v_n^T v_{w_i}) + \sigma(-v_n^T v_{w_i}) = 1
 $$
 
 而且像原始的 softmax 一样，有：
@@ -176,7 +176,7 @@ $$
 $$
 \begin{aligned}
 minimize \thickspace J &= -\log P(w \vert w_i) \\
-&= \prod_{j=1}^{L(w)-1} \delta([n(w,j+1)=ch(n(w,j))] \cdot v_{n(w,j)}^T v_{w_i})
+&= \prod_{j=1}^{L(w)-1} \sigma([n(w,j+1)=ch(n(w,j))] \cdot v_{n(w,j)}^T v_{w_i})
 \end{aligned}
 $$
 
@@ -208,6 +208,8 @@ $$
 \end{aligned}
 $$
 
+目标函数对 $v_c$ 的偏导：
+
 $$
 \begin{aligned}
     \frac{J_{naive-softmax(v_c,o,U)}}{v_c} &= -\frac{\partial (u_o^T v_c)}{\partial v_c} + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial v_c} \\
@@ -217,5 +219,76 @@ $$
     &= -u_o + \sum_{w \in V} \hat{y}_w u_w \\
     &= -U^Ty + U^T \hat{y} \\
     &= U^T(\hat{y}-y)
+\end{aligned}
+$$
+
+目标函数对 $u_w$ 的偏导：
+
+$$
+\begin{aligned}
+    \frac{J_{naive-softmax(v_c,o,U)}}{u_w} &= -\frac{\partial (u_o^T v_c)}{\partial u_w} + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} 
+\end{aligned}
+$$
+
+当 $w \not = o$ 时：
+
+$$
+\begin{aligned}
+    \frac{J_{naive-softmax(v_c,o,U)}}{u_w} &= -0 + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} \\
+    &= \frac{1}{\sum_{w \in V} exp(u_w^T v_c)} \frac{\partial (\sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} \\
+    &= \frac{exp(u_w^T v_c)}{\sum_{w \in V} exp(u_w^T v_c)} v_c \\
+    &= \hat{y}_w v_c \\
+    &= (\hat{y}_w-0)v_c
+\end{aligned}
+$$
+
+当 $w = o$ 时：
+
+$$
+\begin{aligned}
+    \frac{J_{naive-softmax(v_c,o,U)}}{u_w} &= -v_c + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} \\
+    &= -v_c + \frac{1}{\sum_{w \in V} exp(u_w^T v_c)} \frac{\partial (\sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} \\
+    &= -v_c + \frac{exp(u_w^T v_c)}{\sum_{w \in V} exp(u_w^T v_c)} v_c \\
+    &= -v_c + \hat{y}_w v_c \\
+    &= (\hat{y}_w-1)v_c
+\end{aligned}
+$$
+
+所以：
+
+$$
+\begin{aligned}
+    \frac{J_{naive-softmax(v_c,o,U)}}{U} = v_c(\hat{y}-y)^T
+\end{aligned}
+$$
+
+### Sigmoid
+
+$$
+\begin{aligned}
+    \sigma(x) &= \frac{1}{1+e^{-x}} \\
+    &= \frac{e^x}{1+e^x}
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+    \frac{\partial \sigma(x_i)}{\partial x_i} &= \frac{e^{x_i}(1+e^{x_i})-e^{2x_i}}{(1+e^{x_i})^2} \\
+    &= \frac{e^{x_i}}{1+e^{x_i}} \frac{1}{1+e^{x_i}} \\
+    &= \sigma(x_i)(1-\sigma(x_i))
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+    \frac{\partial \sigma(x)}{\partial x} &= \left[\frac{\partial \sigma(x_i)}{\partial x_i}\right]_{d \times d} \\
+    &= \begin{bmatrix}
+        \sigma'(x_1) & 0 & ... & 0 \\
+        0 & \sigma'(x_2) & ... & 0 \\
+        \vdots & \vdots & \vdots & \vdots \\
+        0 & 0 & 0 & \sigma'(x_d) 
+       \end{bmatrix} \\
+    &= \text{diag}(\sigma^\prime(x))
+
 \end{aligned}
 $$
