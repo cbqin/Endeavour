@@ -187,7 +187,7 @@ $$
 
 在这一节，作为练习，我们要实现 SGNS 。
 
-### Naive Softmax
+### Naive Softmax Loss
 
 $$
 V \in R^{V \times d} \\
@@ -212,7 +212,7 @@ $$
 
 $$
 \begin{aligned}
-    \frac{J_{naive-softmax(v_c,o,U)}}{v_c} &= -\frac{\partial (u_o^T v_c)}{\partial v_c} + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial v_c} \\
+    \frac{\partial J_{naive-softmax(v_c,o,U)}}{\partial v_c} &= -\frac{\partial (u_o^T v_c)}{\partial v_c} + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial v_c} \\
     &= -u_o + \frac{1}{\sum_{w \in V} exp(u_w^T v_c)} \frac{\partial (\sum_{w \in V} exp(u_w^T v_c))}{\partial v_c} \\
     &= -u_o + \sum_{w \in V} \frac{exp(u_w^T v_c) u_w}{\sum_{w \in V} exp(u_w^T v_c)} \\
     &= -u_o + \sum_{w \in V} P(O=w \vert C=c) u_w \\
@@ -226,7 +226,7 @@ $$
 
 $$
 \begin{aligned}
-    \frac{J_{naive-softmax(v_c,o,U)}}{u_w} &= -\frac{\partial (u_o^T v_c)}{\partial u_w} + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} 
+    \frac{\partial J_{naive-softmax(v_c,o,U)}}{\partial u_w} &= -\frac{\partial (u_o^T v_c)}{\partial u_w} + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} 
 \end{aligned}
 $$
 
@@ -234,7 +234,7 @@ $$
 
 $$
 \begin{aligned}
-    \frac{J_{naive-softmax(v_c,o,U)}}{u_w} &= -0 + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} \\
+    \frac{\partial J_{naive-softmax(v_c,o,U)}}{\partial u_w} &= -0 + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} \\
     &= \frac{1}{\sum_{w \in V} exp(u_w^T v_c)} \frac{\partial (\sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} \\
     &= \frac{exp(u_w^T v_c)}{\sum_{w \in V} exp(u_w^T v_c)} v_c \\
     &= \hat{y}_w v_c \\
@@ -246,7 +246,7 @@ $$
 
 $$
 \begin{aligned}
-    \frac{J_{naive-softmax(v_c,o,U)}}{u_w} &= -v_c + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} \\
+    \frac{\partial J_{naive-softmax(v_c,o,U)}}{\partial u_w} &= -v_c + \frac{\partial (\log \sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} \\
     &= -v_c + \frac{1}{\sum_{w \in V} exp(u_w^T v_c)} \frac{\partial (\sum_{w \in V} exp(u_w^T v_c))}{\partial u_w} \\
     &= -v_c + \frac{exp(u_w^T v_c)}{\sum_{w \in V} exp(u_w^T v_c)} v_c \\
     &= -v_c + \hat{y}_w v_c \\
@@ -258,7 +258,7 @@ $$
 
 $$
 \begin{aligned}
-    \frac{J_{naive-softmax(v_c,o,U)}}{U} = v_c(\hat{y}-y)^T
+    \frac{\partial J_{naive-softmax(v_c,o,U)}}{\partial U} = v_c(\hat{y}-y)^T
 \end{aligned}
 $$
 
@@ -292,3 +292,74 @@ $$
 
 \end{aligned}
 $$
+
+
+### Negative Sampling Loss
+
+$$
+J_{neg-sample(v_c,o,U)} = -\log(\sigma(u_o^T v_c)) - \sum_{k=1}^K \log(\sigma(-u_k^T v_c))
+$$
+
+对 $v_c$ 的偏导：
+
+$$
+\begin{aligned}
+    \frac{\partial J_{neg-sample(v_c,o,U)}}{\partial v_c} &= -\frac{1}{\sigma(u_o^T v_c)}\sigma(u_o^T v_c)(1-\sigma(u_o^T v_c))u_o + \sum_{k=1}^K \frac{1}{\sigma(-u_k^T v_c)} \sigma(-u_k^T v_c)(1-\sigma(-u_k^T v_c))u_k \\
+    &= (\sigma(u_o^T v_c)-1)u_o + \sum_{k=1}^K (1-\sigma(-u_k^T v_c))u_k \\
+    &= (\sigma(u_o^T v_c)-1)u_o + \sum_{k=1}^K \sigma(u_k^T v_c)u_k \\
+    &= -\sigma(-u_o^T v_c)u_o + \sum_{k=1}^K \sigma(u_k^T v_c)u_k
+\end{aligned}
+$$
+
+对 $u_o$ 的偏导：
+
+$$
+\begin{aligned}
+    \frac{\partial J_{neg-sample(v_c,o,U)}}{\partial u_o} &= -\frac{1}{\sigma(u_o^T v_c)}\sigma(u_o^T v_c)(1-\sigma(u_o^T v_c))v_c \\
+    &= (\sigma(u_o^T v_c)-1)v_c \\
+    &= -\sigma(-u_o^T v_c)v_c
+\end{aligned}
+$$
+
+对 $u_k$ 的偏导：
+
+$$
+\begin{aligned}
+    \frac{\partial J_{neg-sample(v_c,o,U)}}{\partial u_k} &= \frac{1}{\sigma(-u_k^T v_c)} \sigma(-u_k^T v_c)(1-\sigma(-u_k^T v_c))v_c \\
+    &= \sigma(u_k^T v_c)v_c
+\end{aligned}
+$$
+
+### Skip-Gram Loss
+
+$$
+\begin{aligned}
+    J_{skip-gram(v_c,w_{t-m},...,w_{t+m},U)} = \sum_{j \in [-t,t],j\not ={0}} J_{neg-sample(v_c,w_{t+j},U)}
+\end{aligned}
+$$
+
+对 $U$ 的偏导：
+
+$$
+\begin{aligned}
+    \frac{\partial J_{skip-gram(v_c,w_{t-m},...,w_{t+m},U)}}{\partial U} = \sum_{j \in [-t,t],j\not ={0}} \frac{\partial J_{neg-sample(v_c,w_{t+j},U)}}{\partial U}
+\end{aligned}
+$$
+
+对 $v_c$ 的偏导：
+
+$$
+\begin{aligned}
+    \frac{\partial J_{skip-gram(v_c,w_{t-m},...,w_{t+m},U)}}{\partial v_c} &= \sum_{j \in [-t,t],j\not ={0}} \frac{\partial J_{neg-sample(v_c,w_{t+j},U)}}{\partial v_c} 
+\end{aligned}
+$$
+
+对 $v_w (w \not ={c})$ 的偏导：
+
+$$
+\begin{aligned}
+    \frac{\partial J_{skip-gram(v_c,w_{t-m},...,w_{t+m},U)}}{\partial v_c} &= 0 
+\end{aligned}
+$$
+
+### Code
