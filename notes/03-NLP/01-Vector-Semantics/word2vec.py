@@ -97,4 +97,52 @@ def naiveSoftmaxLossAndGradient(
 
 def getNegativeSamples(outsideWordIdx, dataset, K):
     """ Samples K indexes which are not the outsideWordIdx """
-    pass
+    negSampleWordIndices = [None] * K
+    for k in range(K):
+        newidx = dataset.sampleTokenIdx()
+        while newidx == outsideWordIdx:
+            newidx = dataset.sampleTokenIdx()
+        negSampleWordIndices[k] = newidx
+    return negSampleWordIndices
+
+
+def negSamplingLossAndGradient(
+    centerWordVec,
+    outsideWordIdx,
+    outsideVectors,
+    dataset,
+    K=10
+):
+    """ Negative sampling loss function for word2vec models
+    Implement the negative sampling loss and gradients for a centerWordVec
+    and a outsideWordIdx word vector as a building block for word2vec
+    models. K is the number of negative samples to take.
+    Note: The same word may be negatively sampled multiple times. For
+    example if an outside word is sampled twice, you shall have to
+    double count the gradient with respect to this word. Thrice if
+    it was sampled three times, and so forth.
+    Arguments/Return Specifications: same as naiveSoftmaxLossAndGradient
+    """
+    negSampleWordIndices = getNegativeSamples(outsideWordIdx, dataset, K)
+
+    o_vector = outsideVectors[outsideWordIdx]
+    neg_vectors = outsideVectors[negSampleWordIndices]
+
+    o_value = np.dot(o_vector, centerWordVec)
+    neg_values = np.dot(neg_vectors, centerWordVec)
+
+    o_prob = sigmoid(o_value)
+    neg_probs = sigmoid(-neg_values)
+
+    loss = -(np.log(o_prob)+np.sum(np.log(neg_probs)))
+
+    gradCenterVec = (o_prob-1)*o_vector + \
+        np.sum((1-neg_probs[:, np.newaxis])*neg_vectors, axis=0)
+
+    gradOutsideVecs = np.zeros_like(outsideVectors)
+    gradOutsideVecs[outsideWordIdx] = (o_prob-1)*centerWordVec
+
+    for i, neg_index in enumerate(negSampleWordIndices):
+        gradOutsideVecs[neg_index] += (1-neg_probs[i])*centerWordVec
+
+    return loss, gradCenterVec, gradOutsideVecs
