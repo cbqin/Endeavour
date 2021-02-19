@@ -258,7 +258,7 @@ $$
 
 $$
 \begin{aligned}
-    \frac{\partial J_{naive-softmax(v_c,o,U)}}{\partial U} = v_c(\hat{y}-y)^T
+    \frac{\partial J_{naive-softmax(v_c,o,U)}}{\partial U} = (\hat{y}-y)v_c^T
 \end{aligned}
 $$
 
