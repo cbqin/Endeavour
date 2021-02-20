@@ -363,3 +363,5 @@ $$
 $$
 
 ### Code
+
+基于 cs224n 作业2，见 [word2vec](https://github.com/cbqin/Endeavour/blob/main/notes/03-NLP/01-Vector-Semantics/word2vec.py).
