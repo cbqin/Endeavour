@@ -6,7 +6,7 @@ Word2vec 包括两个模型：CBOW 和 Skip-Gram 以及两个优化算法：Hier
 
 上下文预测中间词。
 
-<center><img src="./images/cbow.png" width = "200" height = "200"/></center>
+<center><img src="../images/cbow.png" width = "200" height = "200"/></center>
 
 ### Notations
 
@@ -55,7 +55,7 @@ $$
 
 中间词预测上下文中的词。
 
-<center><img src="./images/skip-gram.png" width = "250" height = "200"/></center>
+<center><img src="../images/skip-gram.png" width = "250" height = "200"/></center>
 
 
 ### Notations
@@ -132,7 +132,7 @@ $$
 
 Hierarchical softmax 利用二叉树来表示词表和计算概率。每一个叶子节点代表一个词，从根结点到叶子节点有唯一的一条路径。没有输出向量，而除了根结点和叶子节点，树中的节点都对应一个需要学习的向量。输出某一叶子节点的概率为 从根结点到此叶子节点路径出现的概率，所以复杂度由 O($\vert$V$\vert$) 变为 O(log$\vert$V$\vert$)。
 
-<center><img src="./images/binary-tree.png" width = "300" height = "200"/></center>
+<center><img src="../images/binary-tree.png" width = "300" height = "200"/></center>
 
 ### Notations
 
