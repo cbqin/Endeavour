@@ -89,3 +89,10 @@ f(x) = \begin{cases}
    1 &\text{otherwise}
 \end{cases} \tag{9}
 $$
+
+<center><img src="../images/glove_weighting_function.png" width = "200" height = "200"/></center>
+
+$\alpha$ 取 3/4，$x_{max}$ 取 100。有趣的是 word2vec 中负采样的权重函数的幂也是 3/4。
+
+## Implementation
+
