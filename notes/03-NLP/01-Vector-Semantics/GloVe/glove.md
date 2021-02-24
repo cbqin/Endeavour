@@ -90,9 +90,10 @@ f(x) = \begin{cases}
 \end{cases} \tag{9}
 $$
 
-<center><img src="../images/glove_weighting_function.png" width = "200" height = "200"/></center>
+<center><img src="./images/glove_weighting_function.png" width = "200" height = "200"/></center>
 
 $\alpha$ 取 3/4，$x_{max}$ 取 100。有趣的是 word2vec 中负采样的权重函数的幂也是 3/4。
 
 ## Implementation
 
+见 [word2vec](https://github.com/cbqin/Endeavour/blob/main/notes/03-NLP/01-Vector-Semantics/GloVe/word2vec.py).
