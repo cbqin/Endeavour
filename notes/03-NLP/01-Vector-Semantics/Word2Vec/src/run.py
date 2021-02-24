@@ -1,12 +1,13 @@
+import matplotlib
+import numpy as np
+import random
+import matplotlib.pyplot as plt
 from treebank import StanfordSentiment
 from sgd import *
 from word2vec import *
 import time
-import matplotlib.pyplot as plt
-import random
-import numpy as np
-import matplotlib
-matplotlib.use('agg')
+# matplotlib.use('agg')
+
 
 # Reset the random seed to make sure that everyone gets the same results
 random.seed(314)
@@ -32,7 +33,7 @@ wordVectors = np.concatenate(
 wordVectors = sgd(
     lambda vec: word2vec_sgd_wrapper(skipgram, tokens, vec, dataset, C,
                                      negSamplingLossAndGradient),
-    wordVectors, 0.3, 40, None, True, PRINT_EVERY=10)
+    wordVectors, 0.3, 40000, None, True, PRINT_EVERY=10)
 
 # Note that normalization is not called here. This is not a bug,
 # normalizing during training loses the notion of length.
