@@ -94,6 +94,16 @@ $$
 
 $\alpha$ 取 3/4，$x_{max}$ 取 100。有趣的是 word2vec 中负采样的权重函数的幂也是 3/4。
 
+接下来计算相关梯度，因为 $i$ 和 $j$ 是对称的，计算一个即可。
+
+$$
+\frac{\partial J}{\partial w_i} = \sum_{j=1}^V f(X_{ij}) w_j (w_i^T\tilde{w}_j + b_i + \tilde{b}_j - \log X_{ij})
+$$
+
+$$
+\frac{\partial J}{\partial b_i} = \sum_{j=1}^V f(X_{ij}) (w_i^T\tilde{w}_j + b_i + \tilde{b}_j - \log X_{ij})
+$$
+
 ## Implementation
 
-见 [word2vec](https://github.com/cbqin/Endeavour/blob/main/notes/03-NLP/01-Vector-Semantics/GloVe/word2vec.py).
+见 [glove](https://github.com/cbqin/Endeavour/blob/main/notes/03-NLP/01-Vector-Semantics/GloVe/src/glove.py).
