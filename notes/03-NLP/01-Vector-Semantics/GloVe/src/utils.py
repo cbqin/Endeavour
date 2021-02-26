@@ -46,7 +46,7 @@ def buildCooccur(vocab, dataset, windowSize=10, minCount=0):
     vocabSize = len(vocab)
     id2word = dict((i, word) for word, (i, _) in vocab.items())
 
-    cooccurrence = sparse.lil_matrix((vocabSize, vocabSize), dtype=np.float64)
+    cooccurrences = sparse.lil_matrix((vocabSize, vocabSize), dtype=np.float64)
 
     for _, sentence in enumerate(dataset):
         tokens = sentence.strip().split()
@@ -59,11 +59,11 @@ def buildCooccur(vocab, dataset, windowSize=10, minCount=0):
             for leftI, leftId in enumerate(contextIds):
                 distance = contextLen - leftI
                 increment = 1.0 / distance
-                cooccurrence[centerId, leftId] += increment
-                cooccurrence[leftId, centerId] += increment
+                cooccurrences[centerId, leftId] += increment
+                cooccurrences[leftId, centerId] += increment
 
-    for i, (row, data) in enumerate(zip(cooccurrence.rows,
-                                        cooccurrence.data)):
+    for i, (row, data) in enumerate(zip(cooccurrences.rows,
+                                        cooccurrences.data)):
         if vocab[id2word[i]][1] < minCount:
             continue
 
