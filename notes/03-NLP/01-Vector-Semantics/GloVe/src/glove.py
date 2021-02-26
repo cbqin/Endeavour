@@ -4,10 +4,10 @@ import random
 from scipy import sparse
 
 
-def lossAndGradient(
+def gloveLossAndGradient(
     centerWordVec,
-    centerBias,
     contextWordVec,
+    centerBias,
     contextBias,
     cooccurrence,
     xMax=100,
@@ -28,9 +28,32 @@ def lossAndGradient(
     return loss, gradCenterVec, gradContextVec, gradCenterBias, gradContextBias
 
 
-def glove(currentCenterWord, word2Ind,
-          centerWordVectors, outsideVectors):
-    pass
+def glove(centerWord, contextWord, cooccurrence,
+          centerVectors, contextVectors,
+          centerBiases, contextBiases):
+
+    loss = 0
+    gradCenterVecs = np.zeros(centerVectors.shape)
+    gradContextVecs = np.zeros(contextVectors.shape)
+    gradCenterBiases = np.zeros(centerBiases.shape)
+    gradContextBiases = np.zeros(contextBiases.shape)
+
+    centerVector = centerVectors[centerWord]
+    contextVector = contextVectors[contextWord]
+    centerBias = centerBiases[centerWord]
+    contextBias = contextBiases[contextWord]
+
+    loss, gradCenterVec, gradContextVec, gradCenterBias, gradContextBias =\
+        gloveLossAndGradient(centerVector, contextVector,
+                             centerBias, contextBias, cooccurrence)
+
+    gradCenterVecs[centerWord] += gradCenterVec
+    gradContextVecs[contextWord] += gradContextVec
+    gradCenterBiases[centerWord] += gradCenterBias
+    gradContextBiases[contextWord] += gradContextBias
+
+    return loss, gradCenterVecs, gradContextVecs, \
+        gradCenterBiases, gradContextBiases
 
 
 def glove_adagrad_wrapper():
