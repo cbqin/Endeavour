@@ -81,6 +81,6 @@ def glove_adagrad_wrapper(gloveModel, wordVectors, wordBiases, cooccurrences):
         gradVectors[:int(N / 2), :] += gradCenterVecs / batchsize
         gradVectors[int(N / 2):, :] += gradContextVecs / batchsize
         gradBiases[:int(N / 2)] += gradCenterBiases / batchsize
-        gradBiases[int(N / 2):] / batchsize
+        gradBiases[int(N / 2):] += gradContextBiases / batchsize
 
     return loss, gradVectors, gradBiases
