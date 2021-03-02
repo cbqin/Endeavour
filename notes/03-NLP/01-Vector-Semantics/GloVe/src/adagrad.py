@@ -6,6 +6,8 @@ import pickle
 
 SAVE_PARAMS_EVERY = 5000
 
+"""Now is sgd."""
+
 
 def load_saved_params():
     """
