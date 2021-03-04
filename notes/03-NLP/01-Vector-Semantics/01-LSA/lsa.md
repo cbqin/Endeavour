@@ -10,8 +10,6 @@
 - 原始矩阵包含噪音，近似矩阵可以看作是一个“去燥”的矩阵。
 - 原始矩阵相对于“真正的” term-document 矩阵过于稀疏。原始矩阵只有文档中包含的单词，却并不包含这些单词的同义词。近似矩阵可以解决一义多词的问题。
 
-
-
 ## Derivation
 
 $$
@@ -39,4 +37,13 @@ $$
 X_k = U_k \Sigma_k V_k^T
 $$
 
-$\hat{t}_i^T$  是 term 向量，对应 $U_k$ 中的一行；$\hat{d}_j$ 是 document 向量，对应 $V_k^T$ 中的一列；
+$\hat{t}_i^T$  是 term 向量，对应 $U_k$ 中的一行；$\hat{d}_j$ 是 document 向量，对应 $V_k^T$ 中的一列。
+
+至此，我们可以利用上式做一些事：
+
+- 文档 $j$ 和 $q$ 的相关度，比较 $\sum_k \cdotp \hat{d}_j$ 和 $\sum_k \cdotp \hat{d}_q$。
+- item $i$ 和 $p$ 的相关度，比较 $\sum_k \cdotp \hat{t}_i$ 和 $\sum_k \cdotp \hat{t}_p$。
+- 聚类。
+- 给定查询语句，检索相关文档，此时需要将输入向量 $d_j$ 转换成潜在语义空间中的向量：$\hat{d}_j = \sum_k^{-1} U_k^T d_j$。同理，对于 item 向量有：$\hat{t}_i = \sum_k^{-1} V_k^T t_i$。
+
+## Limitations
